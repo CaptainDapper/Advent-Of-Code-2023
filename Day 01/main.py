@@ -1,6 +1,6 @@
 
 # Open the file in read mode
-file = open('input.txt', 'r')
+file = open('day 01\\input.txt', 'r')
 
 # Read the entire content of the file
 content = file.readlines()
