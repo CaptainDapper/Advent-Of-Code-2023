@@ -35,7 +35,11 @@ for i in content:
                 number_found = number_names[j]    
         if (lowest_idx == 999999):
             break
-        i = i.replace(number_found, str(number_names.index(number_found) + 1), 1)
+        # set the character at the lowest index in I to the number
+        i_list = list(i)
+        i_list[lowest_idx] = str(number_names.index(number_found) + 1)
+        i = ''.join(i_list)        
+        # i = i.replace(number_found, str(number_names.index(number_found) + 1), 1)
 
     s = ''.join(c for c in i if c.isdigit())   
 
