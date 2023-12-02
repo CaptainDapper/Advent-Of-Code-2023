@@ -14,11 +14,16 @@ maxBlue = 14
 # Not done yet.  Have to go to bed.
 sum = 0
 for i in content:
+    minRed = 0
+    minGreen = 0
+    minBlue = 0
     i = i.replace("\n", "")  # remove new line
     i = i.split(":")         # Split on Colon  Game X: Values
     game = int(i[0].replace("Game ", ""))
     results = i[1].split(";") # Split on Semicolon  Values: Values    
-    possible = True
+    
+    # what is the largest int value
+
     for j in results:
         red = 0
         green = 0
@@ -32,11 +37,15 @@ for i in content:
                 green = int(k.replace("green", ""))
             elif "blue" in k:
                 blue = int(k.replace("blue", ""))
-        if red > maxRed or green > maxGreen or blue > maxBlue:
-            possible = False
-            break
-    if possible:
-        sum += game
+        if red > minRed:
+            minRed = red
+        if green > minGreen:
+            minGreen = green
+        if blue > minBlue:
+            minBlue = blue
+
+    power = minRed * minGreen * minBlue
+    sum += power
 
 print(sum)
 
