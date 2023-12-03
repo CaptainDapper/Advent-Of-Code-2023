@@ -6,7 +6,7 @@ package main
 * Michael Baucum
 * Happy Holidays
 * 🛸🎄❄️🎁
- */
+*/
 
 import (
 	"bufio"
