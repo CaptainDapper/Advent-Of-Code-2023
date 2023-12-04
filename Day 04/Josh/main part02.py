@@ -1,8 +1,8 @@
 from card import card
 
 # Open the file in read mode
-file = open('day 04\\josh\\test.txt', 'r')
-#file = open('day 04\\josh\\input.txt', 'r')
+#file = open('day 04\\josh\\test.txt', 'r')
+file = open('day 04\\josh\\input.txt', 'r')
 
 # Read the entire content of the file
 content = file.readlines()
@@ -35,9 +35,9 @@ for i in range(len(cards)):
     if matches == 0:
         continue
     for j in range(matches):
-        if i + j > maxCards:
+        if i + j + 1 > maxCards:
             break
-        c2 = cards[i + j]
+        c2 = cards[i + j + 1]
         c2.add_copies(copies)
 
 
