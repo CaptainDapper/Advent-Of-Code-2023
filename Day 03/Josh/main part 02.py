@@ -14,6 +14,8 @@ file.close()
 
 # Create an array
 symbols = get_points_from_string_array(content)
+# remove any points that don't have a value of *
+symbols = list(filter(lambda x: x.c == '*', symbols))
 # symbols.append(Point2D(0,0))
 
 # for i in symbols:
@@ -26,14 +28,11 @@ values = get_points_from_string_array_with_values(content)
 
 for v in values:
     bbox = v.get_rectagle().expand(1, 1, 1, 1)
-    #print (bbox)
     for s in symbols:
-     #   print(s)
         if is_point_in_rectangle(s, bbox):
             v.add_near_point(s)
-            # print (f'{v} is in {s}')
-            # input()
-    #input()
+            s.add_near_point(v)
+
 
 
 for yPos in range(len(content)):
@@ -80,25 +79,15 @@ for yPos in range(len(content)):
     print()
 
 
-
 sum = 0
-by_symbol = False
-for i in values:
-    by_symbol = False
-
-    #print (i.get_rectagle())    
-    bbox = i.get_rectagle().expand(1, 1, 1, 1)
-    #print (bbox)
-    #input()
-    for j in symbols:
-        if is_point_in_rectangle(j, bbox):
-            by_symbol = True
-            break
-    if by_symbol == False:
-        # print(i)
-        continue
-    sum += i.v
+gears = list(filter(lambda x: x.c == '*' and len(x.get_near_points()) == 2, symbols))
+for i in gears:
+    g1 = i.get_near_points()[0].get_value()
+    g2 = i.get_near_points()[1].get_value()
+    gr = g1 * g2
+    sum += gr
 
 print(sum)
+
 
 

@@ -16,6 +16,10 @@ def get_points_from_string_array(string_array):
     return points
 
 def is_digit(j):
+    if (j == '-'):
+        return False
+    if (j == '+'):
+        return False
     return j.isdigit()
     
 def is_alpha(j):
@@ -48,8 +52,11 @@ def get_points_from_string_array_with_values(string_array):
             elif inNumber == True and not is_digit(i[xPos]):  # if we are in a number and the current character is not a digit
                 inNumber = False
                 points.append(Point2D(sx, sy, numStr, int(numStr)))
-                continue            
+                continue    
+        if inNumber == True:
+            inNumber = False
+            points.append(Point2D(sx, sy, numStr, int(numStr)))       
     return points
 
 def is_point_in_rectangle(point, rectangle):
-    return (point.x >= rectangle.x and point.x <= rectangle.x + rectangle.width and point.y >= rectangle.y and point.y <= rectangle.y + rectangle.height)
+    return (point.x >= rectangle.x and point.x < rectangle.x + rectangle.width and point.y >= rectangle.y and point.y <= rectangle.y + rectangle.height)

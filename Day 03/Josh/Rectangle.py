@@ -44,8 +44,10 @@ class Rectangle:
         if (ret.height < 0):
             ret.height = 0
         if (ret.x < 0):
+            ret.width += ret.x
             ret.x = 0
         if (ret.y < 0):
+            ret.height += ret.y
             ret.y = 0
         return ret
         
