@@ -1,4 +1,4 @@
-option explicit
+ option explicit
 
 Dim FSO : Set FSO = CreateObject("Scripting.FileSystemObject")
 Dim file : Set file = FSO.OpenTextFile("Input.txt")
@@ -22,9 +22,13 @@ For i = 0 to UBound(arrLines)
 	'DebugLine(" -> " + CStr(i))
 	'Scan for symbols
 	For j = 1 to Len(arrLines(i))
-		If ArrContains(symbols, Mid(arrLines(i),j,1)) Then
+		Dim foundChar
+		If ArrContains(symbols, Mid(arrLines(i),j,1), foundChar) Then
 			'Found a symbol!
 			'TL to BR, find a digit.
+			Dim gear1, gear2
+			gear1 = 0
+			gear2 = 0
 			For y = i-1 to i+1
 				If y >= 0 and y < UBound(arrLines) Then
 					Dim line : line = arrLines(y)
@@ -39,9 +43,18 @@ For i = 0 to UBound(arrLines)
 							'DebugLine(lastDigit)
 							Dim number : number = Mid(line, firstDigit, (lastDigit - firstDigit + 1))
 
-							DebugLine(number)
+							'DebugLine(number)
 
 							total = total + number
+
+							If foundChar = "*" Then
+								If gear1 <> 0 Then
+									DebugLine("Uhm?")
+								End If
+								gear1 = gear2
+								gear2 = number
+								twotal = twotal + gear1 * gear2
+							End If
 
 								'Replace extracted digits with '.' in modified lines- that way we don't double count a digit.
 							line = Left(line, firstDigit - 1)
@@ -81,17 +94,18 @@ Function NonDigitRev(prmString, prmStart)
 	NonDigitRev = 0
 End Function
 
-Function ArrContains(prmSymbols, prmCharacter)
+Function ArrContains(prmSymbols, prmCharacter, ByRef outFoundChar)
 	Dim subI
 	For subI = 1 to Len(prmSymbols)
 		Dim subSym : subSym = Mid(prmSymbols, subI, 1)
 		'DebugLine(subSym + " " + prmCharacter + " | " + CStr((subSym = prmCharacter)))
 		If subSym = prmCharacter Then
-			'refCharacter = subSym
+			outFoundChar = subSym
 			ArrContains = True : Exit Function
 		End If
 	Next
 
+	outFoundChar = ""
 	ArrContains = False : Exit Function
 End Function
 
