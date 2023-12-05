@@ -1,0 +1,11 @@
+from enum import Enum
+
+class MapSetTypeEnum(Enum):
+    NONE = 0,
+    SEED_TO_SOIL = 1,
+    SOIL_TO_FERTILIZER = 2,
+    FERTILIZER_TO_WATER = 3,
+    WATER_TO_LIGHT = 4,
+    LIGHT_TO_TEMPERATURE = 5,
+    TEMPERATURE_TO_HUMIDITY = 6,
+    HUMIDITY_TO_LOCATION = 7
