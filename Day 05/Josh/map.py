@@ -9,12 +9,22 @@ class Map:
         self.map_set_type = map_set_type
 
     def __str__(self):
-        return '\n'.join([str(r) for r in self.ranges])
+        ret = f'{self.map_set_type.name}\n'
+        for r in self.ranges:
+            ret += f'{r}\n'
+        return ret
     
     def add_range(self, str):
         parts = str.split(' ')
-        source_start = int(parts[0])
-        dest_start = int(parts[2])
-        length = int(parts[4])
+        source_start = int(parts[1])
+        dest_start = int(parts[0])
+        length = int(parts[2])
         self.ranges.append(Range(source_start, dest_start, length))
+    
+    def get_value(self, value):
+        for r in self.ranges:
+            if r.in_source_range(value):
+                # print(f'{value} in range {r}')
+                return r.get_dest_value(value)
+        return value
     

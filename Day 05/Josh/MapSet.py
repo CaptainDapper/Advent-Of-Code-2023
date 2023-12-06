@@ -2,7 +2,7 @@ from map import Map
 from MapSetEnum import MapSetTypeEnum
 
 class MapSet:
-    def __int__(self):
+    def __init__(self):
         self.maps = []
         self.maps.append(Map(MapSetTypeEnum.NONE))
         self.maps.append(Map(MapSetTypeEnum.SEED_TO_SOIL))
@@ -14,8 +14,29 @@ class MapSet:
         self.maps.append(Map(MapSetTypeEnum.HUMIDITY_TO_LOCATION))
 
     def get_map(self, map_set_type: MapSetTypeEnum):
-        return self.maps[map_set_type.value]
+        idx = map_set_type.value
+        return self.maps[idx]
 
-        
+    def print_maps(self):
+        for m in self.maps:
+            print (m)
+    
+    def locationValue(self, seedValue):
+        # print (f'seedValue: {seedValue}')        
+        soil = self.get_map(MapSetTypeEnum.SEED_TO_SOIL).get_value(seedValue)
+        # print (f'soil: {soil}')
+        fertilizer = self.get_map(MapSetTypeEnum.SOIL_TO_FERTILIZER).get_value(soil)
+        # print (f'fertilizer: {fertilizer}')
+        water = self.get_map(MapSetTypeEnum.FERTILIZER_TO_WATER).get_value(fertilizer)
+        # print (f'water: {water}')
+        light = self.get_map(MapSetTypeEnum.WATER_TO_LIGHT).get_value(water)
+        # print (f'light: {light}')
+        temperature = self.get_map(MapSetTypeEnum.LIGHT_TO_TEMPERATURE).get_value(light)
+        # print (f'temperature: {temperature}')
+        humidity = self.get_map(MapSetTypeEnum.TEMPERATURE_TO_HUMIDITY).get_value(temperature)
+        # print (f'humidity: {humidity}')
+        location = self.get_map(MapSetTypeEnum.HUMIDITY_TO_LOCATION).get_value(humidity)
+        # print (f'location: {location}')
+        return location
 
     

@@ -13,4 +13,6 @@ class Range:
     def get_dest_value(self, source_value):
         if not self.in_source_range(source_value):
             return source_value
-        return self.dest_start + source_value - self.source_start
+        delta = source_value - self.source_start
+        return self.dest_start + delta
+        
