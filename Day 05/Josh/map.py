@@ -4,9 +4,12 @@ from MapSetEnum import MapSetTypeEnum
 
 class Map:
 
+    
+
     def __init__(self, map_set_type: MapSetTypeEnum):
         self.ranges: List[Range] = []
         self.map_set_type = map_set_type
+        self.cache_location = {}
 
     def __str__(self):
         ret = f'{self.map_set_type.name}\n'
@@ -23,8 +26,17 @@ class Map:
     
     def get_value(self, value):
         for r in self.ranges:
-            if r.in_source_range(value):
-                # print(f'{value} in range {r}')
-                return r.get_dest_value(value)
+            ret = r.get_dest_value(value)
+            if ret != None:
+                return ret            
         return value
+    
+    def get_from_cache(self, value):
+        if value in self.cache_location:
+            return self.cache_location[value]
+        return None
+
+    def cache_location_value(self, value, location):        
+        self.cache_location[value] = location
+        pass
     

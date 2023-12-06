@@ -1,0 +1,63 @@
+nodes = {}
+ 
+class Node:
+    def __init__(self, name):
+        self.name = name
+        self.parents = set()
+        self.to = {}
+ 
+file = 'day 05\\josh\\input.txt'
+# file = "example"
+ 
+with open(file, "r") as f:
+    for row in f:
+        if not row.strip():
+            continue
+        if row[0].isdigit():
+            current_map.append([int(x) for x in row.split(" ")])
+        elif row.startswith("seeds: "):
+            t_seeds = [int(x) for x in row[7:].split()]
+            seeds = [(t_seeds[2*idx], t_seeds[2*idx] + t_seeds[2*idx+1]) for idx in range(len(t_seeds)//2)]
+        else:
+            from_val, to_val = row.split(" ")[0].split("-to-")
+            from_node = nodes.setdefault(from_val, Node(from_val))
+            current_map = from_node.to.setdefault(to_val, [])
+            nodes.setdefault(to_val, Node(to_val)).parents.add(from_node)
+ 
+def map_to_location(node, start_src_init, end_src_init, depth = 0):
+    tabs = "  " * depth
+    print(f'{tabs}{node.name} {start_src_init:,} -> {end_src_init:,}')
+    if node.name == 'location':
+        return start_src_init
+ 
+    lowest_val = 10000000000000000000000000000000
+ 
+    for child_key, rows in node.to.items():
+        src_ranges = [(start_src_init, end_src_init)]
+        for dst, src, length in rows:
+            next_src_ranges = []
+ 
+            for start_src, end_src in src_ranges:
+                if end_src < src or start_src > src + length:
+                    next_src_ranges.append((start_src, end_src))
+                    continue
+ 
+                start_offset = max(src, start_src) - src
+                end_offset = min(src+length, end_src) - src
+ 
+                dst_start = dst + start_offset
+                dst_end = dst + end_offset
+ 
+                lowest_val = min(lowest_val, map_to_location(nodes[child_key], dst_start, dst_end, depth+1))
+ 
+                if start_src < src:
+                    next_src_ranges.append((start_src, src-1))
+                if end_src > src + length:
+                    next_src_ranges.append((src + length + 1, end_src))
+            src_ranges = next_src_ranges
+ 
+        for start_src, end_src in src_ranges:
+            lowest_val = min(lowest_val, map_to_location(nodes[child_key], start_src, end_src, depth+1))
+        return lowest_val
+ 
+print(min(map_to_location(nodes['seed'], start_src, end_src) for start_src, end_src in seeds))

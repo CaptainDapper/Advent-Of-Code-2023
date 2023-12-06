@@ -1,18 +1,21 @@
 class Range:
-    def __init__(self, source_start, dest_start, length):
+    def __init__(self, source_start: int, dest_start: int, length):
         self.source_start = source_start
         self.dest_start = dest_start
         self.length = length 
+        self.cache = { }
+        for i in range(length):
+            self.cache[source_start + i] = dest_start + i
 
     def __str__(self):
         return f'{self.source_start} -> {self.dest_start} length {self.length}'
-    
-    def in_source_range(self, source_value):
-        return source_value >= self.source_start and source_value < self.source_start + self.length
-    
+       
     def get_dest_value(self, source_value):
-        if not self.in_source_range(source_value):
-            return source_value
-        delta = source_value - self.source_start
-        return self.dest_start + delta
+        if source_value in self.cache:
+            return self.cache[source_value]
+        return None
         
+    # create an IEnumerable of the source values
+    def get_source_values(self):
+        for i in range(self.source_start, self.source_start + self.length):
+            yield i
