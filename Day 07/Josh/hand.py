@@ -1,10 +1,32 @@
 from collections import Counter
+from HandEnums import *
 
 class Hand:
-    def __init__(self, str):        
+    def __init__(self, str, wildCard = ''):        
         parts = str.strip().split(' ')
-        self.cards = parts[0]
-        self.bid = int(parts[1])
+        sHand = parts[0]
+        sBid = parts[1]
+        self.cards = self.calculate_best_hand(sHand, wildCard)
+        self.bid = int(sBid)
+        self.hand_data = Counter(self.get_cards())
+
+    def calculate_best_hand(self, cards, wildCard = ''):
+        if wildCard == '':                          # no wild card, return the hand as is
+            return cards
+        if wildCard not in cards:                   # J Jokers are whild cards, and no wild cards are found in this hand
+            return cards
+        
+        highestValue = 0
+        JokerValues = ['A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
+        BestJokerValue = ''
+        for J in JokerValues:
+            handStr = cards.replace('J', J)
+            newHand = Hand(handStr + " 0")
+            handValue = newHand.get_hand_value()
+            if handValue > highestValue:
+                highestValue = handValue
+                BestJokerValue = J
+        return cards.replace('J', BestJokerValue)
 
     def get_cards(self):
         return self.cards
@@ -15,32 +37,21 @@ class Hand:
     def __str__(self):
         return self.cards + ' ' + str(self.bid) + ' ' + str(self.get_strength())
     
-    def get_strength(self):
-        counts = Counter(self.get_cards())
-        # High Cad       - 1
-        # 1 Pair         - 2
-        # 2 Pair         - 3
-        # 3 of a kind    - 4
-        # Full House     - 5
-        # 4 of a kind    - 6
-        # 5 of a kind    - 7
-        return 0
+    def get_hand_type(self):
+        return GetHandType(self.hand_data)
     
-    def get_card_value(str):
-        case = {
-            'A': 14,
-            'K': 13,
-            'Q': 12,
-            'J': 11,
-            'T': 10,
-            '9': 9,
-            '8': 8,
-            '7': 7,
-            '6': 6,
-            '5': 5,
-            '4': 4,
-            '3': 3,
-            '2': 2            
-        }
-        return case[str[0]]
-        
+    def get_x_card(self, x):
+        return GetCardValue(self.cards[x])
+    
+    def get_hand_value(self):
+        value = 0
+
+        value += self.get_hand_type().value * 10000000000
+        value += self.get_x_card(0).value * 100000000
+        value += self.get_x_card(1).value * 1000000
+        value += self.get_x_card(2).value * 10000
+        value += self.get_x_card(3).value * 100
+        value += self.get_x_card(4).value
+        return value
+    
+

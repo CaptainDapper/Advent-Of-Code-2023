@@ -7,7 +7,7 @@ content = ReadFile('day 07\\josh\\test.txt')
 
 hands = []
 for line in content:
-    hands.append(Hand(line))
+    hands.append(Hand(line, 'J'))
 
 # sort by hand value
 hands.sort(key=lambda x: x.get_hand_value(), reverse=False)
