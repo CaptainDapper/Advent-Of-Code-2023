@@ -6,6 +6,7 @@ class Hand:
         parts = str.strip().split(' ')
         sHand = parts[0]
         sBid = parts[1]
+        self.wildCard = wildCard
         self.cards = self.calculate_best_hand(sHand, wildCard)
         self.bid = int(sBid)
         self.hand_data = Counter(self.get_cards())
@@ -41,7 +42,7 @@ class Hand:
         return GetHandType(self.hand_data)
     
     def get_x_card(self, x):
-        return GetCardValue(self.cards[x])
+        return GetCardValue(self.cards[x], self.wildCard)
     
     def get_hand_value(self):
         value = 0

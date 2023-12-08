@@ -42,9 +42,14 @@ class CardValueEnum(Enum):
     FOUR = 4
     THREE = 3
     TWO = 2
+    WILDCARD = 1
     UNKNOWN = 0
 
-def GetCardValue(str):
+def GetCardValue(str, wildCard = ''):
+
+    if (str == wildCard):
+        return CardValueEnum.WILDCARD
+    
     switcher = {
         'A': CardValueEnum.ACE,
         'K': CardValueEnum.KING,

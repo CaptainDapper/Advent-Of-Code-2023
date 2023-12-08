@@ -2,8 +2,8 @@ from helpers import ReadFile
 from hand import Hand
 
 # Open the file in read mode
-content = ReadFile('day 07\\josh\\test.txt')
-# content = ReadFile('day 07\\josh\\input.txt')
+#content = ReadFile('day 07\\josh\\test.txt')
+content = ReadFile('day 07\\josh\\input.txt')
 
 hands = []
 for line in content:
