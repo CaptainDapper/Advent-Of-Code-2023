@@ -1,6 +1,7 @@
 def ReadFile(filename):
     with open(filename) as f:
         content = f.readlines()
+    content = [x.strip() for x in content]
     return content
 
 def GetNumberArray(strList):
