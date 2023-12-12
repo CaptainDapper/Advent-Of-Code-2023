@@ -102,6 +102,10 @@ WriteLine "----- Results -----"
 WriteLine "Part 1: " + CStr(answer1)
 WriteLine "Part 2: " + CStr(answer2)
 
+' ----- Results -----
+' Part 1: 15989
+' Part 2: 13830919117339
+
 Public Function LowestDenom(i1, i2)
 	Dim iTemp
 	If i2 > i1 Then
