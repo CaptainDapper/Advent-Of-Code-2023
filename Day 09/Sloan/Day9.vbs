@@ -26,6 +26,7 @@ For Each arrSection in arrSections
 	If arrSection <> "" Then
 		Dim OASIS : OASIS = Split(arrSection," ")
 		answer1 = answer1 + AwakenedDifferenceEngine(OASIS)
+		answer2 = answer2 + AwakenedDifferenceEngine(ArrayReverse(OASIS))
 	End If
 Next
 

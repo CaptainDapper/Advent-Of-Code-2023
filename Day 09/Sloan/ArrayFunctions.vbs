@@ -148,6 +148,15 @@ Private Sub ArrayMerge(ByRef prmArray1, prmArray2)
 	Next
 End Sub
 
+Private Function ArrayReverse(prmArrayIn)
+	Dim newArray, subI
+	For subI = UBound(prmArrayIn) To 0 Step -1
+		ArrayPush newArray, prmArrayIn(subI)
+	Next
+
+	ArrayReverse = newArray
+End Function
+
 
 
 Private Function SortObjectsByDefault(prmObjectsArr)
