@@ -24,7 +24,7 @@ For i = 0 To UBound(arrSections)
 Next
 
 'Vertical Expansion
-Dim verticalExpansion : Set verticalExpansion = NewArrayList()
+Dim verticalExpansion : Set verticalExpansion = NewDictionary()
 Dim theChar
 Dim noGalaxies
 For y = 0 to UBound(map)
@@ -36,14 +36,12 @@ For y = 0 to UBound(map)
 		End If
 	Next
 	If noGalaxies = True Then
-		verticalExpansion.Add y
+		verticalExpansion.Add y, ""
 	End If
 Next
 
-WriteLine verticalExpansion.Count
-
 'Horizontal Expansion
-Dim horizontalExpansion : Set horizontalExpansion = NewArrayList()
+Dim horizontalExpansion : Set horizontalExpansion = NewDictionary()
 For x = 0 to UBound(map(0))
 	noGalaxies = True
 	For y = 0 to UBound(map)
@@ -53,29 +51,9 @@ For x = 0 to UBound(map(0))
 		End If
 	Next
 	If noGalaxies = True Then
-		horizontalExpansion.Add x
+		horizontalExpansion.Add x, ""
 	End If
 Next
-WriteLine horizontalExpansion.Count
-
-'Insert Expansions
-Dim newMap
-For y = 0 to UBound(map)
-	Dim newString : newString = arrSections(y)
-	For i = 0 to horizontalExpansion.Count - 1
-		newString = StringInsert(newString, ".", horizontalExpansion(i) + 1 + i) '+1 cuz strings are 1-indexed
-	Next
-	map(y) = StringToChars(newString)
-	For x = 0 to UBound(map(y))
-		theChar = map(y)(x)
-	Next
-	ArrayPush newMap, map(y)
-	If verticalExpansion.Contains(y) Then
-		ArrayPush newMap, StringToChars(Replace(Space(Len(newString))," ", "."))
-	End If
-Next
-
-map = newMap
 
 Dim galaxiesArray
 For y = 0 to UBound(map)
@@ -92,26 +70,36 @@ For y = 0 to UBound(map)
 	WriteLine galaxyLineString
 Next
 
+WriteLine UBound(galaxiesArray)
+WriteLine verticalExpansion.Count
+WriteLine horizontalExpansion.Count
+
+Dim count : count = 0
 For i = 0 to UBound(galaxiesArray)-1
 	Dim gal1 : gal1 = galaxiesArray(i)
 	'Dim shortestDist : shortestDist = -1
 	For j = i+1 to UBound(galaxiesArray)
 		If i <> j Then
+			count = count + 1
+			'WriteLine count
 			Dim gal2 : gal2 = galaxiesArray(j)
 			Dim xDiff : xDiff = Abs(gal2(0) - gal1(0))
 			Dim yDiff : yDiff = Abs(gal2(1) - gal1(1))
-			Dim dist : dist = xDiff + yDiff
+			Dim dist : dist = GetDist(gal1, gal2, horizontalExpansion, verticalExpansion, 1)
+			Dim dist2 : dist2 = GetDist(gal1, gal2, horizontalExpansion, verticalExpansion, 999999)
 			'WriteLine dist
 			answer1 = answer1 + dist
+			answer2 = answer2 + dist2
 		End If
 	Next
+	WriteLine count
 Next
 
 
 '----------------------------------------------------------------------
 
 WriteLine "----- Results -----"
-WriteLine "Part 1: " + CStr(answer1)
+WriteLine "Part 1: " + CStr(answer1) '9684228
 WriteLine "Part 2: " + CStr(answer2)
 
 Sub Include (prmFile)
@@ -127,3 +115,29 @@ Sub Include (prmFile)
 	executeGlobal fileData
 	Set FSO = nothing
 End Sub
+
+Function GetDist(prmGal1, prmGal2, prmHorizontalExpansions, prmVerticalExpansions, prmExpansionValue)
+	Dim subStep
+
+	Dim subDist : subDist = Abs(prmGal1(0) - prmGal2(0)) + Abs(prmGal1(1) - prmGal2(1))
+	Dim subI
+	subStep = 1
+	If prmGal1(0) > prmGal2(0) Then
+		subStep = -1
+	End If
+	For subI = prmGal1(0) to prmGal2(0) Step subStep
+		If prmHorizontalExpansions.Exists(subI) Then
+			subDist = subDist + prmExpansionValue
+		End If
+	Next
+	subStep = 1
+	If prmGal1(1) > prmGal2(1) Then
+		subStep = -1
+	End If
+	For subI = prmGal1(1) to prmGal2(1) Step subStep
+		If prmVerticalExpansions.Exists(subI) Then
+			subDist = subDist + prmExpansionValue
+		End If
+	Next
+	GetDist = subDist
+End Function
