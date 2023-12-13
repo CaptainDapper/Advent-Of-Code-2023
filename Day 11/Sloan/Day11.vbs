@@ -99,8 +99,11 @@ Next
 '----------------------------------------------------------------------
 
 WriteLine "----- Results -----"
-WriteLine "Part 1: " + CStr(answer1) '9684228
+WriteLine "Part 1: " + CStr(answer1)
 WriteLine "Part 2: " + CStr(answer2)
+' ----- Results -----
+' Part 1: 9684228
+' Part 2: 483844716556
 
 Sub Include (prmFile)
 	Dim FSO, file, fileData
