@@ -83,14 +83,10 @@ Do While True
 			'borderFlagStr = borderFlagStr & "."
 			If (borderFlags AND (N OR S)) = (N OR S) Then
 				borderFlagStr = borderFlagStr & ChrW(&H2593)
+				insideCount = insideCount + 1
 			Else
 				borderFlagStr = borderFlagStr & " "
 			End If
-		End If
-		'borderFlagStr = borderFlagStr & (borderFlags AND (N OR S))
-
-		If (borderFlags AND (N OR S)) = (N OR S) Then
-			insideCount = insideCount + 1
 		End If
 
 		If Not snakeWalk or y Mod 2 = 0 Then
@@ -251,6 +247,9 @@ End Function
 WriteLine "----- Results -----"
 WriteLine "Part 1: " + CStr(answer1)
 WriteLine "Part 2: " + CStr(answer2)
+' ----- Results -----
+' Part 1: 7012
+' Part 2: 395
 
 Sub Include (prmFile)
 	Dim FSO, file, fileData
