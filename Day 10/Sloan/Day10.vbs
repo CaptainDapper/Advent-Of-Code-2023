@@ -33,36 +33,92 @@ Dim pipe1, pipe2
 Set pipe1 = Nothing
 ' Dim pipe1X, pipe1Y, pipe1Next
 ' Dim pipe2X, pipe2Y, pipe2Next
-For i = 0 To UBound(map)
-	For j = 0 to UBound(map(i))
-		If map(i)(j) = "S" Then
-			startX = j
-			startY = i
+For y = 0 To UBound(map)
+	For x = 0 to UBound(map(y))
+		If map(y)(x) = "S" Then
+			startX = x
+			startY = y
 
 			'North; needs to check for South connection
-			Call CheckNeighborPipes(i-1, j, 8)
-			Call CheckNeighborPipes(i+1, j, 1)
-			'West; needs to check for East connection
-			Call CheckNeighborPipes(i, j-1, 2)
-			Call CheckNeighborPipes(i, j+1, 4)
+			Call CheckNeighborPipes(x, y-1, S)
+			Call CheckNeighborPipes(x, y+1, N)
+			'West; needs to check foast r Econnection
+			Call CheckNeighborPipes(x-1, y, E)
+			Call CheckNeighborPipes(x+1, y, W)
 		End If
 	Next
 Next
 
-WriteLine startY + 1 & " " & startX + 1
-WriteLine pipe1.ToString()
-WriteLine pipe2.ToString()
+Dim borderList : Set borderList = CreateObject("System.Collections.ArrayList")
+
+borderList.Add startX & "," & startY
+borderList.Add pipe1.Slug
+borderList.Add pipe2.Slug
 
 Do
 	pipe1.TakeAStep()
 	pipe2.TakeAStep()
-
-	WriteLine pipe1.ToString()
-	WriteLine pipe2.ToString()
+	If Not borderList.Contains(pipe1.Slug) Then
+		borderList.Add pipe1.Slug
+	End If
+	If Not borderList.Contains(pipe2.Slug) Then
+		borderList.Add pipe2.Slug
+	End If
 Loop While Not (pipe1.X = pipe2.X And pipe1.Y = pipe2.Y)
 
 answer1 = pipe1.Distance
 
+Dim borderFlags : borderFlags = 0
+Dim insideCount : insideCount = 0
+x = 0 : y = 0
+
+Dim snakeWalk : snakeWalk = True
+Do While True
+	Dim borderFlagStr : borderFlagStr = ""
+	Do While True
+		If borderList.Contains(x & "," & y) Then
+			borderFlags = borderFlags XOR GetPipeFlags(map(y)(x))
+			borderFlagStr = borderFlagStr & BetterLoopChar(map(y)(x))
+		Else
+			'borderFlagStr = borderFlagStr & "."
+			If (borderFlags AND (N OR S)) = (N OR S) Then
+				borderFlagStr = borderFlagStr & ChrW(&H2593)
+			Else
+				borderFlagStr = borderFlagStr & " "
+			End If
+		End If
+		'borderFlagStr = borderFlagStr & (borderFlags AND (N OR S))
+
+		If (borderFlags AND (N OR S)) = (N OR S) Then
+			insideCount = insideCount + 1
+		End If
+
+		If Not snakeWalk or y Mod 2 = 0 Then
+			If x = UBound(map(y)) Then
+				Exit Do
+			End If
+			x = x + 1
+		Else
+			If x = 0 Then
+				Exit Do
+			End If
+			x = x - 1
+		End If
+	Loop
+
+	If Not snakeWalk or y Mod 2 = 0 Then
+		Call WriteLine(borderFlagStr)
+	Else
+		Call WriteLine(StrReverse(borderFlagStr))
+	End If
+
+	If y = UBound(map) Then
+		Exit Do
+	End If
+	y = y + 1
+Loop
+
+answer2 = insideCount
 
 
 
@@ -74,13 +130,20 @@ answer1 = pipe1.Distance
 
 
 
-
-
-
-
-
-
-
+Function BetterLoopChar(prmChar)
+	BetterLoopChar = ""
+	Select Case prmChar
+		Case "|" : BetterLoopChar = ChrW(&H2551)'Chr(186)'"║"
+		Case "-" : BetterLoopChar = ChrW(&H2550)'Chr(205)'"═"
+		Case "L" : BetterLoopChar = ChrW(&H255A)'Chr(200)'"╚"
+		Case "J" : BetterLoopChar = ChrW(&H255D)'Chr(188)'"╝"
+		Case "7" : BetterLoopChar = ChrW(&H2557)'Chr(187)'"╗"
+		Case "F" : BetterLoopChar = ChrW(&H2554)'Chr(201)'"╔"
+	End Select
+	If BetterLoopChar = "" Then
+		BetterLoopChar = prmChar
+	End If
+End Function
 
 Class Pipe
 	Private mMap
@@ -96,6 +159,10 @@ Class Pipe
 
 	Public Property Get Y()
 		Y = mY
+	End Property
+
+	Public Property Get Slug()
+		Slug = mX & "," & mY
 	End Property
 
 	Public Default Function Initialize(ByRef prmMap, prmX, prmY, prmNext, prmValue, prmStep)
@@ -136,7 +203,7 @@ Class Pipe
 	End Sub
 End Class
 
-Function CheckNeighborPipes(prmY, prmX, prmFlagVal)
+Function CheckNeighborPipes(prmX, prmY, prmFlagVal)
 	Dim thisFlags : thisFlags = GetPipeFlags(map(prmY)(prmX))
 	If (thisFlags And prmFlagVal) > 0 Then
 		If Not pipe1 Is Nothing Then
